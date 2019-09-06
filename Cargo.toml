@@ -1,0 +1,15 @@
+[package]
+name = "riko"
+version = "0.1.0"
+authors = ["KurozeroPB <root@kurozeropb.info>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+env_logger = "0.6"
+kankyo = "0.3.0"
+log = "0.4"
+
+[dependencies.serenity]
+features = ["cache", "framework", "standard_framework", "rustls_backend"]
