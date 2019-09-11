@@ -20,9 +20,7 @@ fn slow_mode(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult 
         "Failed to find channel in cache.".to_string()
     };
 
-    if let Err(why) = msg.channel_id.say(&ctx.http, say_content) {
-        println!("Error sending message: {:?}", why);
-    }
+    let _ = msg.channel_id.say(&ctx.http, say_content);
 
     Ok(())
 }
