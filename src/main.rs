@@ -1,25 +1,19 @@
 mod commands;
 
+use crate::commands::{ADMIN_GROUP, OTAKU_GROUP, MATH_GROUP, GENERAL_GROUP, OWNER_GROUP};
+
 use std::{collections::{HashSet}, env, sync::Arc};
 use serenity::{
-    client::bridge::gateway::{ShardManager, ShardId},
+    client::bridge::gateway::ShardManager,
     framework::standard::{
-        Args, CheckResult, CommandOptions, CommandResult, CommandGroup,
+        Args, CommandResult, CommandGroup,
         DispatchError, HelpOptions, help_commands, StandardFramework,
-        macros::{group, help, check, command},
+        macros::help,
     },
     model::{event::ResumedEvent, channel::{Message}, gateway::Ready, id::UserId}
 };
 use serenity::prelude::*;
 use log::{error, info};
-
-use commands::{
-    admin::*,
-    otaku::*,
-    math::*,
-    meta::*,
-    owner::*,
-};
 
 struct ShardManagerContainer;
 
@@ -38,43 +32,6 @@ impl EventHandler for Handler {
         info!("Resumed");
     }
 }
-
-group!({
-    name: "math",
-    options: {
-        prefix: "math",
-    },
-    commands: [multiply]
-});
-
-group!({
-    name: "general",
-    options: {},
-    commands: [ping, say, latency]
-});
-
-group!({
-    name: "otaku",
-    options: {},
-    commands: [anime, manga]
-});
-
-group!({
-    name: "admin",
-    options: {
-        checks: [Admin],
-    },
-    commands: [slow_mode]
-});
-
-group!({
-    name: "owner",
-    options: {
-        owners_only: true,
-        only_in: "guilds",
-    },
-    commands: [quit]
-});
 
 #[help]
 #[individual_command_tip = "If you want more information about a specific command, just pass the command as argument."]
@@ -146,55 +103,4 @@ fn main() {
     if let Err(why) = client.start() {
         error!("Client error: {:?}", why);
     }
-}
-
-#[check]
-#[name = "Owner"]
-fn owner_check(_: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
-    (msg.author.id == 93973697643155456).into()
-}
-
-#[check]
-#[name = "Admin"]
-#[check_in_help(true)]
-#[display_in_help(true)]
-fn admin_check(ctx: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
-    if let Some(member) = msg.member(&ctx.cache) {
-
-        if let Ok(permissions) = member.permissions(&ctx.cache) {
-            return permissions.administrator().into();
-        }
-    }
-
-    false.into()
-}
-
-#[command]
-fn latency(ctx: &mut Context, msg: &Message) -> CommandResult {
-    let data = ctx.data.read();
-
-    let shard_manager = match data.get::<ShardManagerContainer>() {
-        Some(v) => v,
-        None => {
-            let _ = msg.reply(&ctx, "There was a problem getting the shard manager");
-
-            return Ok(());
-        },
-    };
-
-    let manager = shard_manager.lock();
-    let runners = manager.runners.lock();
-
-    let runner = match runners.get(&ShardId(ctx.shard_id)) {
-        Some(runner) => runner,
-        None => {
-            let _ = msg.channel_id.say(&ctx.http, "No shard found");
-
-            return Ok(());
-        },
-    };
-
-    let _ = msg.channel_id.say(&ctx.http, &format!("The shard latency is {:?}", runner.latency));
-
-    Ok(())
 }
