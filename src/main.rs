@@ -2,11 +2,11 @@ mod commands;
 
 use std::{collections::{HashSet}, env, sync::Arc};
 use serenity::{
-    client::bridge::gateway::{ShardManager},
+    client::bridge::gateway::{ShardManager, ShardId},
     framework::standard::{
         Args, CheckResult, CommandOptions, CommandResult, CommandGroup,
         DispatchError, HelpOptions, help_commands, StandardFramework,
-        macros::{group, help, check},
+        macros::{group, help, check, command},
     },
     model::{event::ResumedEvent, channel::{Message}, gateway::Ready, id::UserId}
 };
@@ -14,6 +14,8 @@ use serenity::prelude::*;
 use log::{error, info};
 
 use commands::{
+    admin::*,
+    otaku::*,
     math::*,
     meta::*,
     owner::*,
@@ -48,7 +50,21 @@ group!({
 group!({
     name: "general",
     options: {},
-    commands: [ping, say]
+    commands: [ping, say, latency]
+});
+
+group!({
+    name: "otaku",
+    options: {},
+    commands: [anime, manga]
+});
+
+group!({
+    name: "admin",
+    options: {
+        checks: [Admin],
+    },
+    commands: [slow_mode]
 });
 
 group!({
@@ -56,7 +72,6 @@ group!({
     options: {
         owners_only: true,
         only_in: "guilds",
-        checks: [Admin],
     },
     commands: [quit]
 });
@@ -122,6 +137,8 @@ fn main() {
             }
         })
         .help(&MY_HELP)
+        .group(&ADMIN_GROUP)
+        .group(&OTAKU_GROUP)
         .group(&MATH_GROUP)
         .group(&GENERAL_GROUP)
         .group(&OWNER_GROUP));
@@ -150,4 +167,34 @@ fn admin_check(ctx: &mut Context, msg: &Message, _: &mut Args, _: &CommandOption
     }
 
     false.into()
+}
+
+#[command]
+fn latency(ctx: &mut Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read();
+
+    let shard_manager = match data.get::<ShardManagerContainer>() {
+        Some(v) => v,
+        None => {
+            let _ = msg.reply(&ctx, "There was a problem getting the shard manager");
+
+            return Ok(());
+        },
+    };
+
+    let manager = shard_manager.lock();
+    let runners = manager.runners.lock();
+
+    let runner = match runners.get(&ShardId(ctx.shard_id)) {
+        Some(runner) => runner,
+        None => {
+            let _ = msg.channel_id.say(&ctx.http, "No shard found");
+
+            return Ok(());
+        },
+    };
+
+    let _ = msg.channel_id.say(&ctx.http, &format!("The shard latency is {:?}", runner.latency));
+
+    Ok(())
 }

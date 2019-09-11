@@ -1,6 +1,6 @@
 use serenity::prelude::*;
 use serenity::model::prelude::*;
-use serenity::utils::{ ContentSafeOptions, content_safe };
+use serenity::utils::{ContentSafeOptions, content_safe};
 use serenity::framework::standard::{CommandResult, macros::command, Args};
 
 #[command]
