@@ -1,10 +1,19 @@
 mod commands;
+mod utils;
 
-use crate::commands::{ADMIN_GROUP, OTAKU_GROUP, MATH_GROUP, GENERAL_GROUP, OWNER_GROUP};
+use crate::commands::{
+    ADMIN_GROUP,
+    OTAKU_GROUP,
+    MATH_GROUP,
+    GENERAL_GROUP,
+    OWNER_GROUP
+};
 
+use serenity::prelude::*;
+use utils::keys::ShardManagerContainer;
+use log::{error, info};
 use std::{collections::{HashSet}, env, sync::Arc};
 use serenity::{
-    client::bridge::gateway::ShardManager,
     framework::standard::{
         Args, CommandResult, CommandGroup,
         DispatchError, HelpOptions, help_commands, StandardFramework,
@@ -12,14 +21,6 @@ use serenity::{
     },
     model::{event::ResumedEvent, channel::{Message}, gateway::Ready, id::UserId}
 };
-use serenity::prelude::*;
-use log::{error, info};
-
-struct ShardManagerContainer;
-
-impl TypeMapKey for ShardManagerContainer {
-    type Value = Arc<Mutex<ShardManager>>;
-}
 
 struct Handler;
 
