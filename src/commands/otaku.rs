@@ -26,7 +26,7 @@ fn anime(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
 				Some(ref x) => x.to_string(),
 				None => "-".to_owned(),
 			};
-			let anime_type = match ani.attributes.kind.name(){
+			let anime_type = match ani.attributes.kind.name() {
 				Ok(x) => x,
 				Err(_) => "-".to_owned(),
 			};
@@ -36,13 +36,16 @@ fn anime(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
 				Some(ref x) => x.to_string(),
 				None => "-".to_owned(),
 			};
-			let anime_start_date = &ani.attributes.start_date;
+			let anime_start_date = match ani.attributes.start_date {
+                Some(ref x) => x.to_owned(),
+                None => "?".to_owned(),
+            };
 			let anime_end_date = match ani.attributes.end_date {
 				Some(ref x) => x.to_owned(),
 				None => "?".to_owned(),
 			};
 
-			let anime_poster_image = match ani.attributes.poster_image.largest(){
+			let anime_poster_image = match ani.attributes.poster_image.largest() {
 				Some(x) => x.to_owned(),
 				None => "".to_owned(),
 			};
@@ -107,7 +110,7 @@ fn manga(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
 				Some(ref x) => x.to_string(),
 				None => "-".to_owned(),
 			};
-			let manga_chapter_count = match mango.attributes.chapter_count{
+			let manga_chapter_count = match mango.attributes.chapter_count {
 				Some(ref x) => x.to_string(),
 				None => "-".to_owned(),
 			};
