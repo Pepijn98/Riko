@@ -1,7 +1,10 @@
 use crate::ShardManagerContainer;
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::{CommandResult, macros::command};
+
+use serenity::{
+    prelude::*,
+    model::prelude::*,
+    framework::standard::{CommandResult, macros::command},
+};
 
 #[command]
 #[owners_only]
@@ -11,12 +14,12 @@ fn quit(ctx: &mut Context, msg: &Message) -> CommandResult {
     if let Some(manager) = data.get::<ShardManagerContainer>() {
         manager.lock().shutdown_all();
     } else {
-        let _ = msg.reply(&ctx, "There was a problem getting the shard manager");
+        let _ = msg.channel_id.say(&ctx.http, "There was a problem getting the shard manager");
 
         return Ok(());
     }
 
-    let _ = msg.reply(&ctx, "Shutting down!");
+    let _ = msg.channel_id.say(&ctx.http, "Shutting down!");
 
     Ok(())
 }

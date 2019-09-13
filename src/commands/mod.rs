@@ -12,11 +12,13 @@ use crate::commands::{
     owner::*,
 };
 
-use serenity::prelude::*;
-use serenity::model::channel::Message;
-use serenity::framework::standard::{
-    Args, CheckResult, CommandOptions,
-    macros::{group, check},
+use serenity::{
+    prelude::*,
+    model::channel::Message,
+    framework::standard::{
+        Args, CheckResult, CommandOptions,
+        macros::{group, check},
+    },
 };
 
 
@@ -31,7 +33,7 @@ group!({
 group!({
     name: "general",
     options: {},
-    commands: [ping, say]
+    commands: [ping, say, uptime]
 });
 
 group!({

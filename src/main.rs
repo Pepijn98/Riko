@@ -1,5 +1,5 @@
 mod commands;
-mod utils;
+mod keys;
 
 use crate::commands::{
     ADMIN_GROUP,
@@ -10,7 +10,7 @@ use crate::commands::{
 };
 
 use serenity::prelude::*;
-use utils::keys::ShardManagerContainer;
+use keys::{UptimerKey, Uptimer, ShardManagerContainer};
 use log::{error, info};
 use std::{collections::{HashSet}, env, sync::Arc};
 use serenity::{
@@ -71,6 +71,7 @@ fn main() {
     {
         let mut data = client.data.write();
         data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
+        data.insert::<UptimerKey>(Uptimer::new());
     }
 
     let (owners, bot_id) = match client.cache_and_http.http.get_current_application_info() {

@@ -1,9 +1,12 @@
-use serenity::utils::Colour;
 use kitsu::KitsuReqwestRequester;
 use reqwest::Client;
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::{Args, CommandResult, macros::command};
+
+use serenity::{
+	prelude::*,
+	model::prelude::*,
+	utils::Colour,
+	framework::standard::{Args, CommandResult, macros::command},
+};
 
 #[command]
 fn anime(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {

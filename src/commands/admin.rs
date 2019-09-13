@@ -1,6 +1,10 @@
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::{Args, CommandResult, macros::command};
+use log::{error};
+
+use serenity::{
+    prelude::*,
+    model::prelude::*,
+    framework::standard::{Args, CommandResult, macros::command},
+};
 
 #[command]
 #[aliases("slow")]
@@ -8,7 +12,7 @@ use serenity::framework::standard::{Args, CommandResult, macros::command};
 fn slow_mode(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
     let say_content = if let Ok(slow_mode_rate_seconds) = args.single::<u64>() {
         if let Err(why) = msg.channel_id.edit(&ctx.http, |c| c.slow_mode_rate(slow_mode_rate_seconds)) {
-            println!("Error setting channel's slow mode rate: {:?}", why);
+            error!("Error setting channel's slow mode rate: {:?}", why);
 
             format!("Failed to set slow mode to `{}` seconds.", slow_mode_rate_seconds)
         } else {

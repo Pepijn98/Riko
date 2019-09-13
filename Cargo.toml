@@ -11,6 +11,10 @@ env_logger = "0.6.2"
 kankyo = "0.3.0"
 log = "0.4.8"
 reqwest = "0.9"
+time = "0.1.42"
+typemap = "0.3.3"
+num-integer = "0.1.41"
+chrono = "0.4.9"
 kitsu = { git = "https://github.com/KurozeroPB/kitsu.rs" }
 
 [dependencies.serenity]

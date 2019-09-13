@@ -1,6 +1,8 @@
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::{Args, CommandResult, macros::command};
+use serenity::{
+    prelude::*,
+    model::prelude::*,
+    framework::standard::{Args, CommandResult, macros::command},
+};
 
 #[command]
 #[bucket = "default"]
