@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate mongodb;
+#[macro_use]
+extern crate lazy_static;
 
 mod commands;
 mod keys;
@@ -31,7 +33,9 @@ use mongodb::{
     db::{DatabaseInner, ThreadedDatabase},
 };
 
-static mut DB: Option<Arc<DatabaseInner>> = None;
+lazy_static! {
+    static ref DB: Arc<DatabaseInner> = mongodb::Client::with_uri("mongodb://localhost:27017/").unwrap().db("riko");
+}
 
 struct Handler;
 
@@ -48,14 +52,8 @@ impl EventHandler for Handler {
         if is_new {
             info!("Joined {} ({})", guild.name, guild.id.0);
 
-            unsafe {
-                let db = match &DB {
-                    Some(v) => v,
-                    None => return error!("DB is None"),
-                };
-                let coll = db.clone().collection("guilds");
-                coll.insert_one(doc!{ "guild_id": guild.id.0 }, None).unwrap();
-            }
+            let coll = DB.clone().collection("guilds");
+            coll.insert_one(doc!{ "guild_id": guild.id.0 }, None).unwrap();
         }
     }
 }
@@ -93,10 +91,6 @@ fn main() {
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
     let mut client = serenity::Client::new(&token, Handler).expect("Err creating client");
-
-    unsafe {
-        DB = Some(mongodb::Client::with_uri("mongodb://localhost:27017/").unwrap().db("riko"));
-    }
 
     {
         let mut data = client.data.write();

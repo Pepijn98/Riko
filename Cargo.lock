@@ -1318,6 +1318,7 @@ dependencies = [
  "env_logger 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "kankyo 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "kitsu 0.2.0 (git+https://github.com/KurozeroPB/kitsu.rs)",
+ "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "mongodb 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num-integer 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
