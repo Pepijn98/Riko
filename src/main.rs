@@ -1,15 +1,8 @@
 #[macro_use]
 extern crate mongodb;
-extern crate serde;
-#[macro_use(Serialize, Deserialize)]
-extern crate serde_derive;
-extern crate wither;
-#[macro_use(Model)]
-extern crate wither_derive;
 
 mod commands;
 mod keys;
-mod models;
 
 use crate::commands::{
     ADMIN_GROUP,
@@ -35,9 +28,8 @@ use serenity::{
 
 use mongodb::{
     ThreadedClient,
-    db::DatabaseInner,
+    db::{DatabaseInner, ThreadedDatabase},
 };
-use wither::prelude::*;
 
 static mut DB: Option<Arc<DatabaseInner>> = None;
 
@@ -52,21 +44,17 @@ impl EventHandler for Handler {
         info!("Resumed");
     }
 
-    fn guild_create(&self, _: Context, guild: Guild, available: bool) {
-        if available {
-            let mut guild_model = models::Guild {
-                id: None,
-                guild_id: guild.id.0
-            };
-
-            info!("Joined {} ({})", guild.name, guild_model.guild_id);
+    fn guild_create(&self, _: Context, guild: Guild, is_new: bool) {
+        if is_new {
+            info!("Joined {} ({})", guild.name, guild.id.0);
 
             unsafe {
                 let db = match &DB {
                     Some(v) => v,
                     None => return error!("DB is None"),
                 };
-                let _ = guild_model.save(db.clone(), None);
+                let coll = db.clone().collection("guilds");
+                coll.insert_one(doc!{ "guild_id": guild.id.0 }, None).unwrap();
             }
         }
     }
