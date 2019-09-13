@@ -1,5 +1,15 @@
+#[macro_use]
+extern crate mongodb;
+extern crate serde;
+#[macro_use(Serialize, Deserialize)]
+extern crate serde_derive;
+extern crate wither;
+#[macro_use(Model)]
+extern crate wither_derive;
+
 mod commands;
 mod keys;
+mod models;
 
 use crate::commands::{
     ADMIN_GROUP,
@@ -9,18 +19,27 @@ use crate::commands::{
     OWNER_GROUP
 };
 
-use serenity::prelude::*;
 use keys::{UptimerKey, Uptimer, ShardManagerContainer};
 use log::{error, info};
 use std::{collections::{HashSet}, env, sync::Arc};
+
 use serenity::{
+    prelude::*,
     framework::standard::{
         Args, CommandResult, CommandGroup,
         DispatchError, HelpOptions, help_commands, StandardFramework,
         macros::help,
     },
-    model::{event::ResumedEvent, channel::{Message}, gateway::Ready, id::UserId}
+    model::{event::ResumedEvent, channel::{Message}, guild::Guild, gateway::Ready, id::UserId}
 };
+
+use mongodb::{
+    ThreadedClient,
+    db::DatabaseInner,
+};
+use wither::prelude::*;
+
+static mut DB: Option<Arc<DatabaseInner>> = None;
 
 struct Handler;
 
@@ -31,6 +50,25 @@ impl EventHandler for Handler {
 
     fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
+    }
+
+    fn guild_create(&self, _: Context, guild: Guild, available: bool) {
+        if available {
+            let mut guild_model = models::Guild {
+                id: None,
+                guild_id: guild.id.0
+            };
+
+            info!("Joined {} ({})", guild.name, guild_model.guild_id);
+
+            unsafe {
+                let db = match &DB {
+                    Some(v) => v,
+                    None => return error!("DB is None"),
+                };
+                let _ = guild_model.save(db.clone(), None);
+            }
+        }
     }
 }
 
@@ -66,7 +104,11 @@ fn main() {
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
+    let mut client = serenity::Client::new(&token, Handler).expect("Err creating client");
+
+    unsafe {
+        DB = Some(mongodb::Client::with_uri("mongodb://localhost:27017/").unwrap().db("riko"));
+    }
 
     {
         let mut data = client.data.write();
