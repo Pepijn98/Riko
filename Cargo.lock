@@ -663,7 +663,7 @@ dependencies = [
 [[package]]
 name = "kitsu"
 version = "0.2.0"
-source = "git+https://github.com/KurozeroPB/kitsu.rs#b471eb801b480f85e9b30f125066e2351c0d172a"
+source = "git+https://github.com/zeyla/kitsu.rs?branch=feature/dependency-upgrade#6729e54bc5c8f9c2b4b25e7eeb6fe5f8e828fa6d"
 dependencies = [
  "percent-encoding 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.9.20 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1317,7 +1317,7 @@ dependencies = [
  "chrono 0.4.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "env_logger 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "kankyo 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "kitsu 0.2.0 (git+https://github.com/KurozeroPB/kitsu.rs)",
+ "kitsu 0.2.0 (git+https://github.com/zeyla/kitsu.rs?branch=feature/dependency-upgrade)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "mongodb 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2218,7 +2218,7 @@ dependencies = [
 "checksum js-sys 0.3.27 (registry+https://github.com/rust-lang/crates.io-index)" = "1efc4f2a556c58e79c5500912e221dd826bec64ff4aabd8ce71ccef6da02d7d4"
 "checksum kankyo 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "325a11231fa70c1d1b562655db757cefb6022876d62f173831f35bd670ae0c40"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
-"checksum kitsu 0.2.0 (git+https://github.com/KurozeroPB/kitsu.rs)" = "<none>"
+"checksum kitsu 0.2.0 (git+https://github.com/zeyla/kitsu.rs?branch=feature/dependency-upgrade)" = "<none>"
 "checksum lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 "checksum libc 0.2.62 (registry+https://github.com/rust-lang/crates.io-index)" = "34fcd2c08d2f832f376f4173a231990fa5aef4e99fb569867318a227ef4c06ba"
 "checksum linked-hash-map 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "ae91b68aebc4ddb91978b11a1b02ddd8602a05ec19002801c5666000e05e0f83"
